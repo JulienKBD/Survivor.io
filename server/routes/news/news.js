@@ -17,11 +17,8 @@ router.post('/news', async (req, res) => {
     return res.status(400).json({ msg: 'Bad parameter' });
   }
 
-  let conn;
   try {
-    conn = await pool.getConnection();
-
-    const result = await conn.query(createNews, [
+    const result = await pool.query(createNews, [
       news_date,
       location || null,
       title,
@@ -30,50 +27,36 @@ router.post('/news', async (req, res) => {
       startup_id || null
     ]);
 
-    const insertedId = result.insertId;
-    const [news] = await conn.query(getNewsById, [insertedId]);
+    const newsId = result.rows[0].id;
+    const { rows } = await pool.query(getNewsById, [newsId]);
 
-    return res.status(201).json({ news });
+    return res.status(201).json({ news: rows[0] });
   } catch (err) {
     console.error('Error creating news:', err);
-    if (err.code === 'ER_DUP_ENTRY') {
-      return res.status(409).json({ msg: 'News already exists' });
-    }
     return res.status(500).json({ msg: 'Internal server error' });
-  } finally {
-    if (conn) conn.release();
   }
 });
 
 // READ all News
 router.get('/news', async (req, res) => {
-  let conn;
   try {
-    conn = await pool.getConnection();
-    const newsList = await conn.query(getAllNews);
-    return res.status(200).json(newsList);
+    const { rows } = await pool.query(getAllNews);
+    return res.status(200).json(rows);
   } catch (err) {
     console.error('Error fetching news:', err);
     return res.status(500).json({ msg: 'Internal server error' });
-  } finally {
-    if (conn) conn.release();
   }
 });
 
 // READ one News by id
 router.get('/news/:id', async (req, res) => {
-  let conn;
   try {
-    conn = await pool.getConnection();
-    const [news] = await conn.query(getNewsById, [req.params.id]);
-
-    if (!news) return res.status(404).json({ msg: 'News not found' });
-    return res.json(news);
+    const { rows } = await pool.query(getNewsById, [req.params.id]);
+    if (rows.length === 0) return res.status(404).json({ msg: 'News not found' });
+    return res.json(rows[0]);
   } catch (err) {
     console.error('Error fetching news:', err);
     return res.status(500).json({ msg: 'Internal server error' });
-  } finally {
-    if (conn) conn.release();
   }
 });
 
@@ -81,10 +64,8 @@ router.get('/news/:id', async (req, res) => {
 router.put('/news/:id', async (req, res) => {
   const { news_date, location, title, category, description, startup_id } = req.body;
 
-  let conn;
   try {
-    conn = await pool.getConnection();
-    const result = await conn.query(updateNews, [
+    const result = await pool.query(updateNews, [
       news_date,
       location || null,
       title,
@@ -94,35 +75,23 @@ router.put('/news/:id', async (req, res) => {
       req.params.id
     ]);
 
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ msg: 'News not found' });
-    }
+    if (result.rowCount === 0) return res.status(404).json({ msg: 'News not found' });
     return res.json({ msg: 'News updated successfully' });
   } catch (err) {
     console.error('Error updating news:', err);
     return res.status(500).json({ msg: 'Internal server error' });
-  } finally {
-    if (conn) conn.release();
   }
 });
 
 // DELETE News
 router.delete('/news/:id', async (req, res) => {
-  let conn;
   try {
-    conn = await pool.getConnection();
-    const result = await conn.query(deleteNews, [req.params.id]);
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ msg: 'News not found' });
-    }
-
+    const result = await pool.query(deleteNews, [req.params.id]);
+    if (result.rowCount === 0) return res.status(404).json({ msg: 'News not found' });
     return res.json({ msg: 'News deleted successfully' });
   } catch (err) {
     console.error('Error deleting news:', err);
     return res.status(500).json({ msg: 'Internal server error' });
-  } finally {
-    if (conn) conn.release();
   }
 });
 
