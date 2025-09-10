@@ -31,7 +31,7 @@ export default function ProjectsPage() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await fetch("http://localhost:3001/projects");
+        const response = await fetch(`${process.env.RENDER_URL}/projects`);
         const data = await response.json();
         setProjects(data);
       } catch (err) {
@@ -64,7 +64,7 @@ export default function ProjectsPage() {
 
   const handleView = useCallback(async (projectId) => {
     try {
-      await fetch(`http://localhost:3001/projects/${projectId}/views`, {
+      await fetch(`${process.env.RENDER_URL}/projects/${projectId}/views`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

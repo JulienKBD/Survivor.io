@@ -12,7 +12,7 @@ export default function ProjectPage() {
   useEffect(() => {
     if (!id) return;
     (async () => {
-      const res = await fetch(`http://localhost:3001/projects/${id}`);
+      const res = await fetch(`${process.env.RENDER_URL}/projects/${id}`);
       const data = await res.json();
       setProject(data?.project ?? data);
     })();

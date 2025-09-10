@@ -20,7 +20,7 @@ export default function ProjectsTable() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await fetch("http://localhost:3001/projects", {
+        const response = await fetch(`${process.env.RENDER_URL}/projects`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${window.localStorage.getItem("token")}`,
@@ -49,7 +49,7 @@ export default function ProjectsTable() {
     if (!confirmDelete) return;
 
     try {
-      const response = await fetch(`http://localhost:3001/projects/${id}`, {
+      const response = await fetch(`${process.env.RENDER_URL}/projects/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem("token")}`,

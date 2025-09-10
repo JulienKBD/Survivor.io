@@ -11,7 +11,7 @@ export default function ConversationsList({ selectedConversationId, onSelect }) 
     if (!token) return;
     const fetchConversations = async () => {
       try {
-        const res = await fetch("http://localhost:3001/messages/conversations", {
+        const res = await fetch(`${process.env.RENDER_URL}/messages/conversations`, {
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error("Failed to fetch conversations");

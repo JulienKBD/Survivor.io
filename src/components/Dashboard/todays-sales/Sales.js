@@ -11,11 +11,11 @@ const Sales = () => {
   useEffect(() => {
     const fetchStartup = async () => {
       try {
-        const userRes = await fetch("http://localhost:3001/user");
+        const userRes = await fetch(`${process.env.RENDER_URL}/user`);
         const userData = await userRes.json();
         const founderId = userData.founder_id;
 
-        const startupRes = await fetch(`http://localhost:3001/startups/${founderId}`);
+        const startupRes = await fetch(`${process.env.RENDER_URL}/startups/${founderId}`);
         const startupData = await startupRes.json();
 
         setStartup(startupData);

@@ -4,7 +4,7 @@ import { Container, Typography, Card, CardContent, Button, Chip, Stack } from "@
 
 export async function getServerSideProps() {
   try {
-    const res = await fetch(`http://localhost:3001/news`);
+    const res = await fetch(`${process.env.RENDER_URL}/news`);
     if (!res.ok) {
       throw new Error("Erreur lors de la récupération des news");
     }

@@ -51,7 +51,7 @@ export default function DashboardSection() {
   React.useEffect(() => {
     const fetchStartups = async () => {
       try {
-        const res = await fetch("http://localhost:3001/startups");
+        const res = await fetch(`${process.env.RENDER_URL}/startups`);
         const startups = await res.json();
         const startupArray = Array.isArray(startups) ? startups : startups?.data || [];
         setStartupCount(startupArray.length);
@@ -71,7 +71,7 @@ export default function DashboardSection() {
     const fetchMetrics = async () => {
       try {
         const promises = startupIds.map(id =>
-          fetch(`http://localhost:3001/startups/${id}`).then(res => res.json())
+          fetch(`${process.env.RENDER_URL}/startups/${id}`).then(res => res.json())
         );
         const results = await Promise.all(promises);
 
@@ -94,7 +94,7 @@ export default function DashboardSection() {
   React.useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const res = await fetch("http://localhost:3001/projects");
+        const res = await fetch(`${process.env.RENDER_URL}/projects`);
         const projects = await res.json();
         const projectsArray = Array.isArray(projects) ? projects : projects?.data || [];
 

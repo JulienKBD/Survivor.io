@@ -19,7 +19,7 @@ export default function StartupsTable() {
   useEffect(() => {
     const fetchStartups = async () => {
       try {
-        const response = await fetch("http://localhost:3001/startups", {
+        const response = await fetch(`${process.env.RENDER_URL}/startups`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${window.localStorage.getItem("token")}`,

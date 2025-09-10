@@ -22,7 +22,7 @@ const App = () => {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3001/events")
+    fetch(`${process.env.RENDER_URL}/events`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Données reçues :", data);
