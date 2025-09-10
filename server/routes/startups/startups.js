@@ -2,6 +2,7 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const pool = require("../../config/db.js");
 const router = express.Router();
+require('dotenv').config();
 
 const {
   createStartup,
@@ -9,8 +10,7 @@ const {
   getAllStartups,
   getStartupById,
   updateStartup,
-  deleteStartup,
-  getStartupImage,
+  deleteStartup
 } = require("./startups.query.js");
 
 // CREATE startup

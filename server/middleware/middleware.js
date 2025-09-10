@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const loggingMiddleware = (req, res, next) => {
   console.log(`${req.method} ${req.url}`);
   next();

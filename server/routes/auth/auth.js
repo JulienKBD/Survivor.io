@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const pool = require('../../config/db.js');
 const router = express.Router();
 const { createUser, getUserByEmail } = require('./auth.query.js');
+require('dotenv').config();
 
 // Register endpoint
 router.post('/auth/register', async (req, res) => {

@@ -15,7 +15,7 @@ export default function ChatWindow({ conversationId, peerUser }) {
     if (!conversationId || !token) return;
     const fetchMessages = async () => {
       try {
-        const res = await fetch(`${process.env.RENDER_URL}/messages/${conversationId}`, {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/messages/${conversationId}`, {
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error("Failed to fetch messages");
@@ -36,7 +36,7 @@ export default function ChatWindow({ conversationId, peerUser }) {
   const sendMessage = async () => {
     if (!input.trim() || !conversationId || !token) return;
     try {
-      const res = await fetch(`${process.env.RENDER_URL}/messages/${conversationId}`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/messages/${conversationId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ content: input.trim() }),

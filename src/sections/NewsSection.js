@@ -63,7 +63,7 @@ export default function NewsSection() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${process.env.RENDER_URL}/news`)
+    fetch(`${process.env.REACT_APP_API_URL}/news`)
       .then((res) => res.json())
       .then((data) => {
         data.sort((a, b) => new Date(b.news_date) - new Date(a.news_date));

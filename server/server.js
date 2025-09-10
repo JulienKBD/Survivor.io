@@ -42,5 +42,5 @@ app.use(notFound);
 
 // Lancement serveur
 app.listen(port, "0.0.0.0", () => {
-  console.log(`✅ Server is running on http://localhost:${port}`);
+  console.log(`Server is running on ${process.env.RENDER_URL}:${port}`);
 });

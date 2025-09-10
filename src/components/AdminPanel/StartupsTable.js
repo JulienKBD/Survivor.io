@@ -19,7 +19,7 @@ export default function StartupsTable() {
   useEffect(() => {
     const fetchStartups = async () => {
       try {
-        const response = await fetch(`${process.env.RENDER_URL}/startups`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/startups`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${window.localStorage.getItem("token")}`,
