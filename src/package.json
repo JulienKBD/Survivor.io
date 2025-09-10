@@ -21,6 +21,7 @@
     "@mui/styled-engine": "^7.3.2",
     "@mui/system": "^7.3.2",
     "@mui/x-charts": "^8.11.1",
+    "@vercel/speed-insights": "^1.2.0",
     "date-fns": "^4.1.0",
     "echarts": "^5.6.0",
     "echarts-for-react": "^3.0.2",
