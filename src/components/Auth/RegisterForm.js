@@ -92,7 +92,7 @@ export default function RegisterForm() {
     const jsonData = Object.fromEntries(data.entries());
 
     try {
-      const authResponse = await fetch(`${process.env.NEXT_APP_API_URL}/auth/register`, {
+      const authResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -128,7 +128,7 @@ export default function RegisterForm() {
           investment_focus: jsonData.investment_focus,
         };
 
-        await fetch(`${process.env.NEXT_APP_API_URL}/investors`, {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/investors`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -157,7 +157,7 @@ export default function RegisterForm() {
           founder_id: jsonData.founder_id,
         };
 
-        await fetch(`${process.env.NEXT_APP_API_URL}/startups`, {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/startups`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

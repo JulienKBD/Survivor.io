@@ -9,7 +9,7 @@ const PieChartComponent = () => {
   useEffect(() => {
     const fetchSectorData = async () => {
       try {
-        const startupRes = await fetch(`${process.env.NEXT_APP_API_URL}/startups`);
+        const startupRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/startups`);
         const startups = await startupRes.json();
         const startupsArray = Array.isArray(startups) ? startups : startups?.data || [];
 

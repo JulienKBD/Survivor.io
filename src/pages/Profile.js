@@ -50,7 +50,7 @@ export default function Profile() {
 
     const fetchUser = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_APP_API_URL}/users/${userId}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
@@ -85,7 +85,7 @@ export default function Profile() {
     const jsonData = Object.fromEntries(data.entries());
 
     try {
-      const response = await fetch(`${process.env.NEXT_APP_API_URL}/users/${userId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

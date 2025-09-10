@@ -19,7 +19,7 @@ export default function MessagesPage() {
     if (!userId || !token) return;
     const ensureConversation = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_APP_API_URL}/messages/conversations`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/messages/conversations`, {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
           body: JSON.stringify({ userId: Number(userId) }),
