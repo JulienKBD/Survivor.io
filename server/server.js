@@ -41,6 +41,6 @@ app.use("/news", routerNews);
 app.use(notFound);
 
 // Lancement serveur
-app.listen(port, "0.0.0.0", () => {
+app.listen(port, () => {
   console.log(`Server is running on ${process.env.RENDER_URL}:${port}`);
 });
