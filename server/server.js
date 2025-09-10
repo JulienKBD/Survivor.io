@@ -53,11 +53,11 @@ app.put('/startups/:id', routerStartups);
 app.delete('/startups/:id', routerStartups);
 
 // news
-app.post('/news', routernews);
-app.get('/news', routernews);
-app.get('/news/:id', routernews);
-app.put('/news/:id', routernews);
-app.delete('/news/:id', routernews);
+app.post('/news', routerNews);
+app.get('/news', routerNews);
+app.get('/news/:id', routerNews);
+app.put('/news/:id', routerNews);
+app.delete('/news/:id', routerNews);
 
 // 404 Not Found
 app.use(notFound);
