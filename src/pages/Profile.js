@@ -1,7 +1,4 @@
-"use client";
-
 import * as React from "react";
-import { useRouter } from "next/navigation";
 import Navbar from "../components/Navbar";
 import Button from "@mui/joy/Button";
 import {
@@ -14,6 +11,8 @@ import {
 } from "@mui/material";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
+import StartupInfos from "../components/Profile/StartupInfos";
+import UserInfos from "../components/Profile/UserInfos";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -29,12 +28,20 @@ const Card = styled(MuiCard)(({ theme }) => ({
 }));
 
 export default function Profile() {
-  const router = useRouter();
   const [user, setUser] = React.useState(null);
   const [globalError, setGlobalError] = React.useState("");
   const [success, setSuccess] = React.useState("");
   const [token, setToken] = React.useState(null);
   const [userId, setUserId] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
+
+  function parseJwt(token) {
+    try {
+      return JSON.parse(atob(token.split(".")[1]));
+    } catch (e) {
+      return null;
+    }
+  }
 
   React.useEffect(() => {
     const storedToken = window.localStorage.getItem("token");
@@ -50,7 +57,7 @@ export default function Profile() {
 
     const fetchUser = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`, {
+        const response = await fetch(`http://localhost:3001/users/${userId}`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
@@ -66,16 +73,13 @@ export default function Profile() {
       } catch (error) {
         console.error("Error fetching user:", error);
         setGlobalError("An error occurred while fetching user info.");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchUser();
   }, [token, userId]);
-
-  const handleLogout = () => {
-    window.localStorage.removeItem("token");
-    router.push("/Login");
-  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -85,7 +89,7 @@ export default function Profile() {
     const jsonData = Object.fromEntries(data.entries());
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}users/${userId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -110,32 +114,20 @@ export default function Profile() {
     }
   };
 
-  // fonction pour décoder le token JWT
-  function parseJwt(token) {
-    try {
-      return JSON.parse(atob(token.split(".")[1]));
-    } catch (e) {
-      return null;
-    }
-  }
-
-  if (!user) return <p>Loading...</p>;
+  if (loading)
+    return<p>Loading...</p>;
+  if (!user)
+    return <p>No user data found.</p>;
 
   return (
     <main>
       <CssBaseline />
       <Navbar />
 
-      {/* Infos utilisateur */}
-      <Card variant="outlined" sx={{ mt: 6 }}>
-        <Typography variant="h5" sx={{ textAlign: "center", mb: 2 }}>
-          User Information
-        </Typography>
-        <Typography><strong>Name:</strong> {user.name}</Typography>
-        <Typography><strong>Email:</strong> {user.email}</Typography>
-      </Card>
+      <UserInfos user={user} />
 
-      {/* Formulaire update */}
+      <StartupInfos user={user} token={token} setGlobalError={setGlobalError} setLoading={setLoading} />
+
       <Card variant="outlined" sx={{ mt: 6 }}>
         <Typography
           component="h1"

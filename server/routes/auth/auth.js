@@ -26,7 +26,7 @@ router.post('/auth/register', async (req, res) => {
     return res.status(201).json({ token });
   } catch (err) {
     console.error('Internal server error:', err);
-    if (err.code === '23505') return res.status(409).json({ msg: 'Account already exists' }); // duplicate key
+    if (err.code === '23505') return res.status(409).json({ msg: 'Account already exists' });
     return res.status(500).json({ msg: 'Internal server error' });
   }
 });

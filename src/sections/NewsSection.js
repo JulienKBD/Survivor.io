@@ -91,7 +91,7 @@ export default function NewsSection() {
                   date={item.news_date}
                   excerpt={item.description}
                   category={item.category}
-                  location={item.location} 
+                  location={item.location}
                 />
               </Grid>
             ))

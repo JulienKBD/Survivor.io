@@ -40,7 +40,7 @@ export default function News({ news }) {
 
       <Container maxWidth="md" sx={{ py: 4 }}>
         <Typography variant="h3" gutterBottom>
-          Fil d'actualité
+          News feed
         </Typography>
 
         <Stack direction="row" spacing={1} mb={3}>
