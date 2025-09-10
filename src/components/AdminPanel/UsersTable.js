@@ -23,7 +23,7 @@ export default function UsersTable() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/users`, {
+        const response = await fetch(`${process.env.NEXT_APP_API_URL}/users`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${window.localStorage.getItem("token")}`,
@@ -51,7 +51,7 @@ export default function UsersTable() {
     if (!confirmDelete) return;
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/users/${id}`, {
+      const response = await fetch(`${process.env.NEXT_APP_API_URL}/users/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem("token")}`,

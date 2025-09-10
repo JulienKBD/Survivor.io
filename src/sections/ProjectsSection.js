@@ -15,7 +15,7 @@ export default function ProjectsPreview() {
   useEffect(() => {
     const fetchRandomProjects = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/projects`);
+        const response = await fetch(`${process.env.NEXT_APP_API_URL}/projects`);
         const data = await response.json();
 
         const projectsList = Array.isArray(data) ? data : data?.projects ?? [];

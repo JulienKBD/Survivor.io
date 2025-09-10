@@ -11,7 +11,7 @@ export default function ConversationsList({ selectedConversationId, onSelect }) 
     if (!token) return;
     const fetchConversations = async () => {
       try {
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/messages/conversations`, {
+        const res = await fetch(`${process.env.NEXT_APP_API_URL}/messages/conversations`, {
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error("Failed to fetch conversations");

@@ -22,7 +22,7 @@ const App = () => {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/events`)
+    fetch(`${process.env.NEXT_APP_API_URL}/events`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Données reçues :", data);

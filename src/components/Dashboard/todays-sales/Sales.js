@@ -11,11 +11,11 @@ const Sales = () => {
   useEffect(() => {
     const fetchStartup = async () => {
       try {
-        const userRes = await fetch(`${process.env.REACT_APP_API_URL}/user`);
+        const userRes = await fetch(`${process.env.NEXT_APP_API_URL}/user`);
         const userData = await userRes.json();
         const founderId = userData.founder_id;
 
-        const startupRes = await fetch(`${process.env.REACT_APP_API_URL}/startups/${founderId}`);
+        const startupRes = await fetch(`${process.env.NEXT_APP_API_URL}/startups/${founderId}`);
         const startupData = await startupRes.json();
 
         setStartup(startupData);

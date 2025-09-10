@@ -6,9 +6,7 @@ const { getUsers, getUser, putUser, deleteUser } = require('./users.query.js');
 // GET all users
 router.get('/users', async (req, res) => {
   try {
-    console.log("test");
     const result = await pool.query(getUsers);
-    console.log("connexion réussie");
 
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Aucun utilisateur.' });
