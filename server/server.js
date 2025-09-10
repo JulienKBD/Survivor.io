@@ -19,23 +19,45 @@ app.use(express.json());
 app.use(loggingMiddleware);
 app.use(corsMiddleware);
 
-// Auth
-app.use("/auth", routerAuth);
+// Authentication
+app.post('/auth/register', routerAuth);
+app.post('/auth/login', routerAuth);
 
 // Users
-app.use("/users", routerUsers);
+app.get('/users', routerUsers);
+app.get('/users/:userId', routerUsers);
+app.put('/users/:userId', routerUsers);
+app.delete('/users/:userId', routerUsers);
 
 // Projects
-app.use("/projects", routerProjects);
+app.post('/projects', routerProjects);
+app.get('/projects', routerProjects);
+app.get('/projects/:id', routerProjects);
+app.put('/projects/:id', routerProjects);
+app.delete('/projects/:id', routerProjects);
+app.put('/projects/:id/views', routerProjects);
 
 // Events
-app.use("/events", routerEvents);
+app.post('/events', routerEvents);
+app.get('/events', routerEvents);
+app.get('/events/:id', routerEvents);
+app.put('/events/:id', routerEvents);
+app.delete('/events/:id', routerEvents);
 
 // Startups
-app.use("/startups", routerStartups);
+app.post('/startups', routerStartups);
+app.get('/startups', routerStartups);
+app.get('/startups/:id', routerStartups);
+app.get('/startups/:id/image', routerStartups);
+app.put('/startups/:id', routerStartups);
+app.delete('/startups/:id', routerStartups);
 
-// News
-app.use("/news", routerNews);
+// news
+app.post('/news', routernews);
+app.get('/news', routernews);
+app.get('/news/:id', routernews);
+app.put('/news/:id', routernews);
+app.delete('/news/:id', routernews);
 
 // 404 Not Found
 app.use(notFound);
