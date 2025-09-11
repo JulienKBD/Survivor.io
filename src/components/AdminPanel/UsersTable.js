@@ -118,6 +118,14 @@ export default function UsersTable() {
                     <Button
                       variant="contained"
                       size="small"
+                      color="primary"
+                      onClick={() => handleEdit(user.id)}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="contained"
+                      size="small"
                       color="error"
                       onClick={() => handleDelete(user.id)}
                     >

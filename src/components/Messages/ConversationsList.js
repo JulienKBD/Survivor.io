@@ -1,67 +1,75 @@
 import React, { useEffect, useState } from "react";
-import { List, ListItem, ListItemText, Paper, Typography, Box, Avatar } from "@mui/material";
-import { getToken, getCurrentUserId } from "../../utils/auth";
+import {
+  List,
+  ListItemButton,
+  ListItemText,
+  TextField,
+  Box,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
+import { getToken } from "../../utils/auth";
 
-export default function ConversationsList({ selectedConversationId, onSelect }) {
-  const [conversations, setConversations] = useState([]);
-  const [error, setError] = useState("");
+export default function UsersList({ onSelectUser, selectedUserId, currentUserId }) {
+  const token = getToken();
+  const [users, setUsers] = useState([]);
+  const [q, setQ] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const token = getToken();
     if (!token) return;
-    const fetchConversations = async () => {
+    (async () => {
+      setLoading(true);
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/messages/conversations`, {
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        const r = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
+          headers: { Authorization: `Bearer ${token}` },
         });
-        if (!res.ok) throw new Error("Failed to fetch conversations");
-        const data = await res.json();
-        setConversations(Array.isArray(data) ? data : []);
+        const data = await r.json();
+        const list = Array.isArray(data) ? data : (data.users || []);
+        setUsers(list.filter(u => u.id !== currentUserId));
       } catch (e) {
-        console.error(e);
-        setError("Impossible de charger les conversations");
+        setUsers([]);
+      } finally {
+        setLoading(false);
       }
-    };
-    fetchConversations();
-  }, []);
+    })();
+  }, [token, currentUserId]);
 
-  const me = getCurrentUserId();
+  const filtered = users.filter(u =>
+    (u.name || u.email || "").toLowerCase().includes(q.toLowerCase())
+  );
 
   return (
-    <Paper sx={{ height: "100%", overflowY: "auto" }}>
-      <Box sx={{ p: 2, borderBottom: "1px solid", borderColor: "divider" }}>
-        <Typography variant="h6">Conversations</Typography>
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      <Box sx={{ p: 1 }}>
+        <TextField
+          size="small"
+          fullWidth
+          placeholder="Rechercher"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+        />
       </Box>
-      {error && (
-        <Typography color="error" sx={{ p: 2 }}>
-          {error}
-        </Typography>
-      )}
-      <List>
-        {conversations.map((c) => {
-          const other = c.participants?.find((p) => p.id !== me) || c.otherUser || {};
-          const title = other?.name || other?.email || `Conversation #${c.id}`;
-          return (
-            <ListItem
-              key={c.id}
-              button
-              selected={selectedConversationId === c.id}
-              onClick={() => onSelect(c)}
-            >
-              <Avatar sx={{ mr: 2 }}>{(title || "?").charAt(0).toUpperCase()}</Avatar>
-              <ListItemText
-                primary={title}
-                secondary={c.lastMessage?.content || ""}
-              />
-            </ListItem>
-          );
-        })}
-        {conversations.length === 0 && !error && (
-          <Typography sx={{ p: 2 }} color="text.secondary">
-            Aucune conversation.
-          </Typography>
+      <Box sx={{ flex: 1, overflowY: "auto" }}>
+        {loading && <CircularProgress size={22} sx={{ m: 2 }} />}
+        {!loading && filtered.length === 0 && (
+          <Typography variant="body2" sx={{ p: 2 }}>Aucun utilisateur</Typography>
         )}
-      </List>
-    </Paper>
+        <List dense>
+          {filtered.map(u => (
+            <ListItemButton
+              key={u.id}
+              selected={u.id === selectedUserId}
+              onClick={() => onSelectUser?.(u)}
+            >
+              <ListItemText
+                primary={u.name || u.email}
+                secondary={u.email && u.name ? u.email : null}
+              />
+            </ListItemButton>
+          ))}
+        </List>
+      </Box>
+    </Box>
   );
 }
