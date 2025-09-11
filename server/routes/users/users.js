@@ -64,6 +64,46 @@ router.patch('/users/:userId/password', async (req, res) => {
   }
 });
 
+router.patch('/users/:userId', async (req, res) => {
+  const { userId } = req.params;
+  const allowedFields = ['name', 'email', 'password'];
+  const updates = {};
+
+  for (const key of allowedFields) {
+    if (req.body[key] !== undefined) {
+      updates[key] = req.body[key];
+    }
+  }
+
+  if (Object.keys(updates).length === 0) {
+    return res.status(400).json({ error: 'Aucun champ valide à mettre à jour.' });
+  }
+
+  try {
+    const setClause = Object.keys(updates)
+      .map((key, idx) => `${key} = $${idx + 1}`)
+      .join(', ');
+
+    const values = [...Object.values(updates), userId];
+    const sql = `UPDATE users SET ${setClause} WHERE id = $${values.length}`;
+
+    const result = await pool.query(sql, values);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé.' });
+    }
+
+    res.status(200).json({
+      message: 'Utilisateur mis à jour avec succès !',
+      updatedFields: updates,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erreur lors de la mise à jour de l\'utilisateur.' });
+  }
+});
+
+
 // PUT user (update name/email)
 router.put('/users/:userId', async (req, res) => {
   const { userId } = req.params;
