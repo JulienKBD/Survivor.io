@@ -1,48 +1,76 @@
 const express = require('express');
 const pool = require('../../config/db.js');
 const router = express.Router();
+const bcrypt = require('bcryptjs');
 const { getUsers, getUser, putUser, deleteUser } = require('./users.query.js');
 
 // GET all users
 router.get('/users', async (req, res) => {
   try {
-    const result = await pool.query(getUsers);
+    const { rows } = await pool.query(getUsers);
 
-    if (result.rows.length === 0) {
+    if (rows.length === 0) {
       return res.status(404).json({ error: 'Aucun utilisateur.' });
     }
 
-    res.status(200).json(result.rows);
+    res.status(200).json(rows);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Erreur lors de la récupération des utilisateurs.' });
   }
 });
 
-// GET user by ID
+// GET one user
 router.get('/users/:userId', async (req, res) => {
   const { userId } = req.params;
   try {
-    const result = await pool.query(getUser, [userId]);
+    const { rows } = await pool.query(getUser, [userId]);
 
-    if (result.rows.length === 0) {
+    if (rows.length === 0) {
       return res.status(404).json({ error: 'Utilisateur non trouvé.' });
     }
 
-    res.status(200).json(result.rows[0]);
+    res.status(200).json(rows[0]);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Erreur lors de la récupération de l\'utilisateur.' });
   }
 });
 
-// UPDATE user
+// PATCH user password
+router.patch('/users/:userId/password', async (req, res) => {
+  const { userId } = req.params;
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword) {
+    return res.status(400).json({ error: 'Les deux champs sont requis.' });
+  }
+
+  try {
+    const { rows } = await pool.query(getUser, [userId]);
+    const user = rows[0];
+    if (!user) return res.status(404).json({ error: 'Utilisateur non trouvé.' });
+
+    const validPassword = await bcrypt.compare(currentPassword, user.password);
+    if (!validPassword) return res.status(403).json({ error: 'Mot de passe actuel incorrect.' });
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await pool.query('UPDATE users SET password = $1 WHERE id = $2', [hashedPassword, userId]);
+
+    res.json({ message: 'Mot de passe mis à jour avec succès.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+// PUT user (update name/email)
 router.put('/users/:userId', async (req, res) => {
   const { userId } = req.params;
-  const { name, email, password } = req.body;
+  const { name, email } = req.body;
 
-  if (!name || !email || !password) {
-    return res.status(400).json({ error: 'Le prénom, l\'email et le mot de passe sont requis.' });
+  if (!name || !email) {
+    return res.status(400).json({ error: 'Le prénom et l\'email sont requis.' });
   }
 
   try {
@@ -56,8 +84,7 @@ router.put('/users/:userId', async (req, res) => {
       message: 'Utilisateur mis à jour avec succès !',
       userId,
       name,
-      email,
-      password
+      email
     });
   } catch (err) {
     console.error(err);

@@ -1,14 +1,7 @@
 import * as React from "react";
+import { useRouter } from "next/navigation";
 import Navbar from "../components/Navbar";
-import Button from "@mui/joy/Button";
-import {
-  Box,
-  CssBaseline,
-  FormControl,
-  FormLabel,
-  TextField,
-  Typography,
-} from "@mui/material";
+import {  CssBaseline } from "@mui/material";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
 import StartupInfos from "../components/Profile/StartupInfos";
@@ -28,6 +21,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
 }));
 
 export default function Profile() {
+  const router = useRouter();
   const [user, setUser] = React.useState(null);
   const [globalError, setGlobalError] = React.useState("");
   const [success, setSuccess] = React.useState("");
@@ -81,39 +75,6 @@ export default function Profile() {
     fetchUser();
   }, [token, userId]);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (!token || !userId) return;
-
-    const data = new FormData(event.currentTarget);
-    const jsonData = Object.fromEntries(data.entries());
-
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}users/${userId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(jsonData),
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        setSuccess("Profile updated successfully");
-        setGlobalError("");
-        setUser((prev) => ({ ...prev, ...jsonData }));
-      } else {
-        setSuccess("");
-        setGlobalError(result.msg || "Update failed");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      setGlobalError("An error occurred. Please try again later.");
-    }
-  };
-
   if (loading)
     return<p>Loading...</p>;
   if (!user)
@@ -124,53 +85,9 @@ export default function Profile() {
       <CssBaseline />
       <Navbar />
 
-      <UserInfos user={user} />
+      <UserInfos user={user} token={token} setGlobalError={setGlobalError} />
 
       <StartupInfos user={user} token={token} setGlobalError={setGlobalError} setLoading={setLoading} />
-
-      <Card variant="outlined" sx={{ mt: 6 }}>
-        <Typography
-          component="h1"
-          variant="h4"
-          sx={{ width: "100%", textAlign: "center", mb: 2 }}
-        >
-          Profile Settings
-        </Typography>
-
-        {globalError && (
-          <Typography color="error" sx={{ textAlign: "center", mb: 2 }}>
-            {globalError}
-          </Typography>
-        )}
-        {success && (
-          <Typography color="success.main" sx={{ textAlign: "center", mb: 2 }}>
-            {success}
-          </Typography>
-        )}
-
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
-        >
-          {["name", "email", "password"].map((field) => (
-            <FormControl key={field}>
-              <FormLabel htmlFor={field}>{field}</FormLabel>
-              <TextField
-                id={field}
-                name={field}
-                defaultValue={field !== "password" ? user[field] : ""}
-                placeholder={field === "password" ? "••••••" : ""}
-                type={field === "password" ? "password" : "text"}
-                fullWidth
-              />
-            </FormControl>
-          ))}
-          <Button type="submit" fullWidth variant="solid" color="primary">
-            Save Changes
-          </Button>
-        </Box>
-      </Card>
     </main>
   );
 }

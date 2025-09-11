@@ -1,7 +1,10 @@
 import * as React from "react";
-import { Typography } from "@mui/material";
+import { Typography, Button, Stack, TextField, IconButton } from "@mui/material";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
+import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
+import CloseIcon from "@mui/icons-material/Close";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -18,11 +21,13 @@ const Card = styled(MuiCard)(({ theme }) => ({
 
 export default function StartupInfos({ user, token, setGlobalError, setLoading }) {
   const [startup, setStartup] = React.useState(null);
+  const [editingField, setEditingField] = React.useState(null);
+  const [tempValue, setTempValue] = React.useState("");
 
   const fetchStartup = async (startupId) => {
     if (!token) return;
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/startups/${startupId}`, {
+      const response = await fetch(`http://localhost:3001/startups/${startupId}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -49,28 +54,98 @@ export default function StartupInfos({ user, token, setGlobalError, setLoading }
     }
   }, [user]);
 
-  if (!startup || user.role !== "founder") return null;
+  const handleEdit = (field, value) => {
+    setEditingField(field);
+    setTempValue(value || "");
+  };
+
+  const handleCancel = () => {
+    setEditingField(null);
+    setTempValue("");
+  };
+
+  const handleSave = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/startups/${startup.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ [editingField]: tempValue }),
+      });
+
+      if (response.ok) {
+        setStartup((prev) => ({ ...prev, [editingField]: tempValue }));
+        setEditingField(null);
+      } else {
+        setGlobalError("Failed to update startup info");
+      }
+    } catch (error) {
+      console.error("Error updating startup:", error);
+      setGlobalError("An error occurred while updating startup info.");
+    }
+  };
+
+  if (user?.role !== "founder" || !startup) return null;
+
+  const fields = [
+    { label: "Name", field: "name" },
+    { label: "Email", field: "email" },
+    { label: "Phone", field: "phone" },
+    { label: "Address", field: "address" },
+    { label: "Website", field: "website_url" },
+    { label: "Social Media", field: "social_media_url" },
+    { label: "Project Status", field: "project_status" },
+    { label: "Needs", field: "needs" },
+    { label: "Sector", field: "sector" },
+    { label: "Maturity", field: "maturity" },
+    { label: "Views", field: "views" },
+    { label: "Description", field: "description" },
+    { label: "Legal Status", field: "legal_status" },
+    { label: "Image URL", field: "image" },
+  ];
 
   return (
     <Card variant="outlined" sx={{ mt: 6 }}>
-        <Typography variant="h5" sx={{ textAlign: "center", mb: 2 }}>
+      <Typography variant="h5" sx={{ textAlign: "center", mb: 2 }}>
         Startup Information
-        </Typography>
-        <Typography><strong>Name:</strong> {startup.name}</Typography>
-        <Typography><strong>Email:</strong> {startup.email}</Typography>
-        <Typography><strong>Phone:</strong> {startup.phone}</Typography>
-        <Typography><strong>Address:</strong> {startup.address}</Typography>
-        <Typography><strong>Website:</strong> {startup.website_url}</Typography>
-        <Typography><strong>Social Media:</strong> {startup.social_media_url}</Typography>
-        <Typography><strong>Project Status:</strong> {startup.project_status}</Typography>
-        <Typography><strong>Needs:</strong> {startup.needs}</Typography>
-        <Typography><strong>Sector:</strong> {startup.sector}</Typography>
-        <Typography><strong>Maturity:</strong> {startup.maturity}</Typography>
-        <Typography><strong>Views:</strong> {startup.views}</Typography>
-        <Typography><strong>Description:</strong> {startup.description}</Typography>
-        <Typography><strong>Legal status:</strong> {startup.legal_status}</Typography>
-        <Typography><strong>Created at:</strong> {new Date(startup.created_at).toLocaleDateString()}</Typography>
-        <Typography><strong>Image URL:</strong> {startup.image}</Typography>
+      </Typography>
+
+      {fields.map(({ label, field }) => (
+        <div key={field} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          {editingField === field ? (
+            <>
+              <TextField
+                label={label}
+                value={tempValue}
+                onChange={(e) => setTempValue(e.target.value)}
+                fullWidth
+              />
+              <IconButton color="success" onClick={handleSave}>
+                <SaveIcon />
+              </IconButton>
+              <IconButton color="inherit" onClick={handleCancel}>
+                <CloseIcon />
+              </IconButton>
+            </>
+          ) : (
+            <>
+              <Typography sx={{ flexGrow: 1 }}>
+                <strong>{label}:</strong> {startup[field]}
+              </Typography>
+              <IconButton color="primary" onClick={() => handleEdit(field, startup[field])}>
+                <EditIcon />
+              </IconButton>
+            </>
+          )}
+        </div>
+      ))}
+
+      <Typography>
+        <strong>Created at:</strong>{" "}
+        {new Date(startup.created_at).toLocaleDateString()}
+      </Typography>
     </Card>
-    );
+  );
 }

@@ -107,14 +107,6 @@ export default function UsersTable() {
                 <TableCell>{user.investor_id ?? "-"}</TableCell>
                 <TableCell>
                   <Stack direction="row" spacing={1}>
-                    <Button
-                      variant="contained"
-                      size="small"
-                      color="error"
-                      onClick={() => handleDelete(user.id)}
-                    >
-                      Delete
-                    </Button>
                     <Link href={{ pathname: "/Messages", query: { userId: user.id } }} style={{ textDecoration: "none" }}>
                       <Button
                         variant="contained"
@@ -123,6 +115,14 @@ export default function UsersTable() {
                         Message
                       </Button>
                     </Link>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      color="error"
+                      onClick={() => handleDelete(user.id)}
+                    >
+                      Delete
+                    </Button>
                   </Stack>
                 </TableCell>
               </TableRow>

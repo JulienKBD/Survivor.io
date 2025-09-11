@@ -105,148 +105,149 @@ export default function Navbar() {
         </Box>
 
         {/* Menu utilisateur ou Login */}
-        {isLoggedIn ? (
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            {/* Desktop Account Menu */}
-            <Button
-              variant="outlined"
-              color="neutral"
-              sx={{
-                fontSize: "21px",
-                minHeight: "82px",
-                minWidth: "120px",
-                padding: "12px",
-                display: { xs: "none", md: "inline-flex" },
-              }}
-              onClick={handleClickUser}
-            >
-              <AccountCircleIcon sx={{ fontSize: "40px" }} />
-            </Button>
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-              placement="bottom-end"
-            >
-              <MenuItem onClick={handleClose}>
-                <Link
-                  href="/DashboardProfile"
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
-                  Dashboard
-                </Link>
-              </MenuItem>
-              <MenuItem onClick={handleClose}>
-                <Link
-                  href="/Messages"
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
-                  Messages
-                </Link>
-              </MenuItem>
-              <MenuItem onClick={handleClose}>
-                <Link
-                  href="/Profile"
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
-                  Profile
-                </Link>
-              </MenuItem>
+        {/* Menu utilisateur / login / burger */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          {isLoggedIn ? (
+            <>
+              {/* Bouton user desktop */}
+              <Button
+                variant="outlined"
+                color="neutral"
+                sx={{
+                  fontSize: "21px",
+                  minHeight: "82px",
+                  minWidth: "120px",
+                  padding: "12px",
+                  display: { xs: "none", md: "inline-flex" },
+                }}
+                onClick={handleClickUser}
+              >
+                <AccountCircleIcon sx={{ fontSize: "40px" }} />
+              </Button>
 
-              {role === "admin" && (
+              {/* Menu Desktop user */}
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+                placement="bottom-end"
+              >
                 <MenuItem onClick={handleClose}>
-                  <Link
-                    href="/AdminPanel"
-                    style={{ textDecoration: "none", color: "red", fontWeight: "bold" }}
-                  >
-                    Admin Panel
+                  <Link href="/DashboardProfile" style={{ textDecoration: "none", color: "inherit" }}>
+                    Dashboard
                   </Link>
                 </MenuItem>
-              )}
-
-              <MenuItem onClick={handleLogout}>
-                <LogoutIcon style={{ marginRight: 8, color: "red" }} />
-                Logout
-              </MenuItem>
-            </Menu>
-
-            {/* Mobile burger */}
-            <Button
-              variant="outlined"
-              color="neutral"
-              sx={{ display: { xs: "inline-flex", md: "none" } }}
-              onClick={handleClickMobile}
-            >
-              <MenuIcon />
-            </Button>
-            <Menu
-              anchorEl={mobileAnchorEl}
-              open={Boolean(mobileAnchorEl)}
-              onClose={handleClose}
-              placement="bottom-end"
-            >
-              {navLinks.map((link) => (
-                <MenuItem key={link.name} onClick={handleClose}>
-                  <Link
-                    href={link.href}
-                    style={{ textDecoration: "none", color: "inherit" }}
-                  >
-                    {link.name}
-                  </Link>
-                </MenuItem>
-              ))}
-              <MenuItem onClick={handleClose}>
-                <Link
-                  href="/DashboardProfile"
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
-                  Dashboard
-                </Link>
-              </MenuItem>
-              <MenuItem onClick={handleClose}>
-                <Link
-                  href="/Profile"
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
-                  Profile
-                </Link>
-              </MenuItem>
-
-              {role === "admin" && (
                 <MenuItem onClick={handleClose}>
-                  <Link
-                    href="/AdminPanel"
-                    style={{ textDecoration: "none", color: "red", fontWeight: "bold" }}
-                  >
-                    Admin Panel
+                  <Link href="/Messages" style={{ textDecoration: "none", color: "inherit" }}>
+                    Messages
                   </Link>
                 </MenuItem>
-              )}
+                <MenuItem onClick={handleClose}>
+                  <Link href="/Profile" style={{ textDecoration: "none", color: "inherit" }}>
+                    Profile
+                  </Link>
+                </MenuItem>
+                {role === "admin" && (
+                  <MenuItem onClick={handleClose}>
+                    <Link
+                      href="/AdminPanel"
+                      style={{ textDecoration: "none", color: "red", fontWeight: "bold" }}
+                    >
+                      Admin Panel
+                    </Link>
+                  </MenuItem>
+                )}
+                <MenuItem onClick={handleLogout}>
+                  <LogoutIcon style={{ marginRight: 8, color: "red" }} />
+                  Logout
+                </MenuItem>
+              </Menu>
+            </>
+          ) : (
+            <>
+              {/* Bouton login desktop */}
+              <Link href="/Login" style={{ textDecoration: "none" }}>
+                <Button
+                  variant="outlined"
+                  color="neutral"
+                  sx={{
+                    fontSize: "21px",
+                    padding: "10px 24px",
+                    minHeight: "82px",
+                    minWidth: "120px",
+                    fontWeight: "bold",
+                    transform: "translateY(-3px)",
+                    display: { xs: "none", md: "inline-flex" },
+                  }}
+                >
+                  Login
+                </Button>
+              </Link>
+            </>
+          )}
 
-              <MenuItem onClick={handleLogout}>
-                <LogoutIcon style={{ marginRight: 8, color: "red" }} />
-                Logout
+          {/* Burger menu (mobile) */}
+          <Button
+            variant="outlined"
+            color="neutral"
+            sx={{ display: { xs: "inline-flex", md: "none" } }}
+            onClick={handleClickMobile}
+          >
+            <MenuIcon />
+          </Button>
+          <Menu
+            anchorEl={mobileAnchorEl}
+            open={Boolean(mobileAnchorEl)}
+            onClose={handleClose}
+            placement="bottom-end"
+          >
+            {navLinks.map((link) => (
+              <MenuItem key={link.name} onClick={handleClose}>
+                <Link href={link.href} style={{ textDecoration: "none", color: "inherit" }}>
+                  {link.name}
+                </Link>
               </MenuItem>
-            </Menu>
-          </Box>
-        ) : (
-          <Link href="/Login" style={{ textDecoration: "none" }}>
-            <Button
-              variant="outlined"
-              color="neutral"
-              sx={{
-                fontSize: "21px",
-                padding: "10px 24px",
-                minHeight: "82px",
-                minWidth: "120px",
-                fontWeight: "bold",
-                transform: "translateY(-3px)",
-              }}
-            >
-              Login
-            </Button>
-          </Link>
-        )}
+            ))}
+
+            {isLoggedIn ? (
+              <>
+                <MenuItem onClick={handleClose}>
+                  <Link href="/DashboardProfile" style={{ textDecoration: "none", color: "inherit" }}>
+                    Dashboard
+                  </Link>
+                </MenuItem>
+                <MenuItem onClick={handleClose}>
+                  <Link href="/Profile" style={{ textDecoration: "none", color: "inherit" }}>
+                    Profile
+                  </Link>
+                </MenuItem>
+                {role === "admin" && (
+                  <MenuItem onClick={handleClose}>
+                    <Link
+                      href="/AdminPanel"
+                      style={{ textDecoration: "none", color: "red", fontWeight: "bold" }}
+                    >
+                      Admin Panel
+                    </Link>
+                  </MenuItem>
+                )}
+                <MenuItem onClick={handleLogout}>
+                  <LogoutIcon style={{ marginRight: 8, color: "red" }} />
+                  Logout
+                </MenuItem>
+              </>
+            ) : (
+              <MenuItem onClick={handleClose}>
+                <Link
+                  href="/Login"
+                  style={{ textDecoration: "none", color: "inherit", fontWeight: "bold" }}
+                >
+                  Login
+                </Link>
+              </MenuItem>
+            )}
+          </Menu>
+        </Box>
       </Box>
     </Box>
   );

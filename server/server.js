@@ -28,6 +28,8 @@ app.get('/users', routerUsers);
 app.get('/users/:userId', routerUsers);
 app.put('/users/:userId', routerUsers);
 app.delete('/users/:userId', routerUsers);
+app.patch('/users/:userId', routerUsers);
+app.patch('/users/:userId/password', routerUsers)
 
 // Projects
 app.post('/projects', routerProjects);
@@ -50,6 +52,7 @@ app.get('/startups', routerStartups);
 app.get('/startups/:id', routerStartups);
 app.get('/startups/:id/image', routerStartups);
 app.put('/startups/:id', routerStartups);
+app.patch('/startups/:id', routerStartups);
 app.delete('/startups/:id', routerStartups);
 
 // news
