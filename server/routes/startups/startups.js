@@ -14,7 +14,7 @@ const {
 } = require("./startups.query.js");
 
 // CREATE startup
-router.post("/", async (req, res) => {
+router.post("/startups", async (req, res) => {
   const {
     name,
     legal_status,
@@ -65,7 +65,7 @@ router.post("/", async (req, res) => {
 });
 
 // READ all startups
-router.get("/", async (req, res) => {
+router.get("/startups", async (req, res) => {
   try {
     const { rows } = await pool.query(getAllStartups);
     return res.json(rows);
@@ -76,7 +76,7 @@ router.get("/", async (req, res) => {
 });
 
 // READ one startup by id
-router.get("/:id", async (req, res) => {
+router.get("/startups/:id", async (req, res) => {
   try {
     const { rows } = await pool.query(getStartupById, [req.params.id]);
     const startup = rows[0];
@@ -134,7 +134,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // DELETE startup
-router.delete("/:id", async (req, res) => {
+router.delete("/startups/:id", async (req, res) => {
   try {
     const result = await pool.query(deleteStartup, [req.params.id]);
     if (result.rowCount === 0)
